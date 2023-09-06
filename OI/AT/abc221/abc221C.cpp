@@ -1,39 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, ans = 0;
-vector<int> s1, s2, s3, s4;
+int ans = 0;
+string n;
+int wei[20][2], len[2];
 
-bool cmp(int a, int b) {
-  return a > b;
-}
-
-void DFS(int x) {
-  if(!x) {
-    int na = 0, nb = 0;
-    s3 = s1;
-    sort(s3.begin(), s3.end(), cmp);
-    s4 = s2;
-    sort(s4.begin(), s4.end(), cmp);
-    for(int i : s3) {
-      na = na * 10 + i;
+void DFS(int p) {
+  if(!(~p)) {
+    int n[2] = {0};
+    for(int i = 0; i < len[0]; i++) {
+      n[0] = n[0] * 10 + wei[i][0];
     }
-    for(int i : s4) {
-      nb = nb * 10 + i;
+    for(int i = 0; i < len[1]; i++) {
+      n[1] = n[1] * 10 + wei[i][1];
     }
-    ans = max(ans, na * nb);
+    ans = max(ans, n[0] * n[1]);
     return ;
   }
-  s1.push_back(x % 10);
-  DFS(x / 10);
-  s1.pop_back(), s2.push_back(x % 10);
-  DFS(x / 10);
-  s2.pop_back();
+  wei[len[0]++][0] = n[p] - '0';
+  DFS(p - 1);
+  len[0]--, wei[len[1]++][1] = n[p] - '0';
+  DFS(p - 1);
+  len[1]--;
 }
 
 int main() {
   cin >> n;
-  DFS(n);
+  sort(n.begin(), n.end());
+  DFS(n.size() - 1);
   cout << ans << '\n';
   return 0;
 }
